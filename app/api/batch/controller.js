@@ -79,7 +79,7 @@ const create = async (req, res) => {
       });
     }
 
-    await table.BatchModel.create(
+    const batch = await table.BatchModel.create(
       req,
       record?.franchisee_id || teacher.franchisee_id,
       record?.id || teacher.sub_franchisee_id,
@@ -100,7 +100,7 @@ const create = async (req, res) => {
     //   });
     // });
 
-    const data = await table.GroupModel.create(req, user_ids);
+    const data = await table.GroupModel.create(req, user_ids, batch.id);
 
     if (data) {
       user_ids.forEach(async (userId) => {
@@ -254,12 +254,10 @@ const get = async (req, res) => {
     if (req.user_data.role === "sub_franchisee") {
       franchisee = await table.FranchiseeModel.getByUserId(req);
       if (!franchisee) {
-        return res
-          .code(404)
-          .send({
-            message:
-              "master franchisee not exists. Please contact us our support team",
-          });
+        return res.code(404).send({
+          message:
+            "master franchisee not exists. Please contact us our support team",
+        });
       }
     }
 

@@ -32,6 +32,16 @@ const init = async (sequelize) => {
         allowNull: false,
         defaultValue: [],
       },
+      batch_id: {
+        type: sequelizeFwk.DataTypes.UUID,
+        allowNull: true,
+        onDelete: "CASCADE",
+        references: {
+          model: constants.models.BATCH_TABLE,
+          key: "id",
+          deferrable: sequelizeFwk.Deferrable.INITIALLY_IMMEDIATE,
+        },
+      },
       is_community: {
         type: sequelizeFwk.DataTypes.BOOLEAN,
         defaultValue: false,
@@ -46,13 +56,15 @@ const init = async (sequelize) => {
   await GroupModel.sync({ alter: true });
 };
 
-const create = async (req, user_ids = []) => {
+const create = async (req, user_ids = [], batch_id = null) => {
   console.log({ id: req.user_data.id });
   return await GroupModel.create({
     group_name: req.body?.group_name || req.body?.batch_name,
     group_admin: req.body?.group_admin || [req.body.teacher_id],
     group_users: [req.user_data.id, ...user_ids],
     group_image: req.body?.group_image,
+    batch_id: batch_id,
+    is_community: batch_id ? true : false,
   });
 };
 
