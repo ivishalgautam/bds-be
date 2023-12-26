@@ -105,7 +105,7 @@ const get = async (req, res) => {
 
       const master = await table.FranchiseeModel.getById(
         null,
-        sub.dataValues.franchisee_id
+        franchisee.dataValues.franchisee_id
       );
 
       master_user_id = master.user_id;
