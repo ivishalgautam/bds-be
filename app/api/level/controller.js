@@ -48,7 +48,7 @@ const update = async (req, res) => {
 
     const levelExist = await table.LevelModel.getByLevel(req.body.level);
 
-    if (levelExist) {
+    if (levelExist.id !== req.params.id) {
       return res
         .code(409)
         .send({ message: `Level: '${req.body.level}' exist!` });
