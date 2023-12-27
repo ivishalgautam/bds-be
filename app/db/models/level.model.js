@@ -23,6 +23,10 @@ const init = async (sequelize) => {
         allowNull: false,
         type: sequelizeFwk.DataTypes.INTEGER,
       },
+      name: {
+        allowNull: false,
+        type: sequelizeFwk.DataTypes.TEXT,
+      },
       color: {
         allowNull: false,
         type: sequelizeFwk.DataTypes.STRING,
@@ -42,6 +46,7 @@ const create = async (req) => {
     level: req.body.level,
     min_reward_point: req.body.min_reward_point,
     color: req.body.color,
+    name: req.body.name,
   });
 };
 
@@ -51,6 +56,7 @@ const update = async (req) => {
       level: req.body.level,
       min_reward_point: req.body.min_reward_point,
       color: req.body.color,
+      name: req.body.name,
     },
     {
       where: {
