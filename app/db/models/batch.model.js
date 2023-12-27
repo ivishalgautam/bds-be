@@ -156,6 +156,7 @@ const get = async (teacher_id, sub_franchisee_id, student_id) => {
         INNER JOIN courses crs ON crs.id = bt.course_id
         INNER JOIN groups grp ON grp.batch_id = bt.id
         ${wherQuery}
+        ORDER BY bt.created_at DESC
     `;
   return await BatchModel.sequelize.query(query, {
     type: sequelizeFwk.QueryTypes.SELECT,

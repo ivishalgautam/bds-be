@@ -151,6 +151,11 @@ const getById = async (req, res) => {
   }
 };
 
+const fetchCoursesBatches = async (req, res) => {
+  try {
+  } catch (error) {}
+};
+
 export default {
   assignCourse,
   updateAssignCourse,
