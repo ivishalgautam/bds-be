@@ -16,13 +16,13 @@ import uploadFileRoutes from "./app/api/upload_file/routes.js";
 */
 
 export default (app) => {
+  app.register(cors, { origin: "*" });
   app.register(fastifyStatic, {
     root: path.join(dirname(fileURLToPath(import.meta.url)), "public"),
     prefix: "/public/",
   });
   app.register(pg_database);
   app.register(fastifyMultipart);
-  app.register(cors, { origin: "*" });
   app.register(routes, { prefix: "v1" });
   app.register(authRoutes, { prefix: "v1/auth" });
   app.register(uploadFileRoutes, { prefix: "v1/upload" });
