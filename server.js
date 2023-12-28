@@ -22,7 +22,11 @@ export default (app) => {
   });
   app.register(pg_database);
   app.register(fastifyMultipart);
-  app.register(cors, { origin: true });
+  app.register(cors, {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+  });
   app.register(routes, { prefix: "v1" });
   app.register(authRoutes, { prefix: "v1/auth" });
   app.register(uploadFileRoutes, { prefix: "v1/upload" });
