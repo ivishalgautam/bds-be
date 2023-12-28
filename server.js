@@ -22,7 +22,7 @@ export default (app) => {
   });
   app.register(pg_database);
   app.register(fastifyMultipart);
-  app.register(cors, { origin: "api.bdsconnectcc.in" });
+  app.register(cors, { origin: "*" });
   app.register(routes, { prefix: "v1" });
   app.register(authRoutes, { prefix: "v1/auth" });
   app.register(uploadFileRoutes, { prefix: "v1/upload" });
