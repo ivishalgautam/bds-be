@@ -20,11 +20,7 @@ export default (app) => {
     root: path.join(dirname(fileURLToPath(import.meta.url)), "public"),
     prefix: "/public/",
   });
-  app.register(cors, {
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type"],
-  });
+  app.register(cors, { origin: "*" });
   app.register(pg_database);
   app.register(fastifyMultipart);
   app.register(routes, { prefix: "v1" });
