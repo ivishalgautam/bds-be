@@ -2,6 +2,8 @@
 
 import pump from "pump";
 import fs from "fs";
+import { fileURLToPath } from "url";
+import path, { dirname } from "path";
 
 const imageMime = ["jpeg", "jpg", "png", "gif", "webp"];
 const videoMime = ["mp4", "mpeg", "ogg", "webm", "m4v", ".mov"];
@@ -21,7 +23,6 @@ const uploadFiles = async (req, res) => {
     const files = req.files();
     for await (const file of files) {
       let folder;
-      //   console.log(file);
       const mime = file.mimetype.split("/").pop();
       if (imageMime.includes(mime)) {
         folder = "public/images/";
@@ -34,7 +35,11 @@ const uploadFiles = async (req, res) => {
       }
 
       const filePath =
-        `${folder}` + file.filename.replaceAll(" ", "_").replaceAll("'", "_");
+        `${folder}` +
+        file.filename
+          .replaceAll(" ", "_")
+          .replaceAll("'", "_")
+          .replaceAll("/", "_");
 
       await fs.promises.mkdir(folder, { recursive: true });
 
@@ -51,14 +56,26 @@ const uploadFiles = async (req, res) => {
 
 const getFile = async (req, res) => {
   if (!req.query || !req.query.file_path) {
-    return res.send(
-      "missing_mandatory_paramter",
-      "file_path is required parameter"
-    );
+    return res.send({
+      message: "file_path is required parameter",
+    });
   }
-  if (!fs.existsSync(req.query.file_path)) {
+
+  const currentFilePath = fileURLToPath(import.meta.url);
+  const currentDirPath = dirname(currentFilePath);
+  const publicPath = path.join(
+    currentDirPath,
+    "../../../public",
+    req.query.file_path
+  );
+
+  console.log({ publicPath });
+
+  if (!fs.existsSync(publicPath)) {
+    console.log("file not found");
     return res.code(404).send({ message: "file not found" });
   }
+
   let mime = req.query.file_path.split(".").pop();
   if (["jpeg", "jpg", "png", "gif", "webp"].includes(mime)) {
     if (mime === "jpg") {
@@ -86,8 +103,12 @@ const getFile = async (req, res) => {
   if (mime === "doc") {
     res.type("application/msword");
   }
-  return res.send(await fs.readFileSync(req.query.file_path));
-  return;
+
+  try {
+    return res.send(await fs.readFileSync(publicPath));
+  } catch (error) {
+    console.error({ error });
+  }
 };
 
 export default {

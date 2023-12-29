@@ -17,7 +17,7 @@ import uploadFileRoutes from "./app/api/upload_file/routes.js";
 
 export default (app) => {
   app.register(fastifyStatic, {
-    root: path.join(dirname(fileURLToPath(import.meta.url)), "public"),
+    root: path.join(dirname(fileURLToPath(import.meta.url), "public")),
     prefix: "/public/",
   });
   app.register(cors, { origin: "*" });
