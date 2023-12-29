@@ -7,11 +7,9 @@ const create = async (req, res) => {
     const teacher_id = (await table.TeacherModel.getByUserId(req.user_data.id))
       .id;
     if (!teacher_id) {
-      return res.send(
-        "permission_not_allow",
-        "you have not permissions to upload video"
-      );
-      return;
+      return res.send({
+        message: "you do not have permissions to upload video",
+      });
     }
     await table.RecordingModel.create(req, teacher_id);
     return res.send({

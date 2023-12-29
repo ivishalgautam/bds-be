@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import { v4 as uuidv4 } from "uuid";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
@@ -13,7 +10,10 @@ const s3Client = new S3Client({
 });
 
 const uploadToS3 = async (file, folder) => {
-  const key = `${folder}/${uuidv4()}-${file.filename}`;
+  const key = `${folder}/${uuidv4()}-${file.filename
+    .replaceAll(" ", "_")
+    .replaceAll("'", "_")
+    .replaceAll("/", "_")}`;
 
   const command = new PutObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME,

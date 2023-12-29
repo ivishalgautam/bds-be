@@ -4,6 +4,7 @@ import pump from "pump";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
+import { uploadToS3 } from "../../config/s3Service.js";
 
 const imageMime = ["jpeg", "jpg", "png", "gif", "webp"];
 const videoMime = ["mp4", "mpeg", "ogg", "webm", "m4v", ".mov"];
@@ -54,6 +55,38 @@ const uploadFiles = async (req, res) => {
   }
 };
 
+const uploadVideo = async (req, res) => {
+  let path = [];
+  try {
+    const files = req.files();
+    for await (const file of files) {
+      let folder;
+      const mime = file.mimetype.split("/").pop();
+      if (videoMime.includes(mime)) {
+        folder = "public/videos";
+      } else {
+        throw new Error("File should be video.");
+      }
+
+      const filePath =
+        `${folder}` +
+        file.filename
+          .replaceAll(" ", "_")
+          .replaceAll("'", "_")
+          .replaceAll("/", "_");
+
+      const data = await uploadToS3(file, folder);
+      path.push(data);
+    }
+    return res.send({
+      path: path,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.send(error);
+  }
+};
+
 const getFile = async (req, res) => {
   if (!req.query || !req.query.file_path) {
     return res.send({
@@ -68,8 +101,6 @@ const getFile = async (req, res) => {
     "../../../public",
     req.query.file_path
   );
-
-  console.log({ publicPath });
 
   if (!fs.existsSync(publicPath)) {
     console.log("file not found");
@@ -114,4 +145,5 @@ const getFile = async (req, res) => {
 export default {
   uploadFiles,
   getFile,
+  uploadVideo,
 };
