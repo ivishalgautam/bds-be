@@ -1,11 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import fs from "fs";
 import {
   DeleteObjectCommand,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
-import Ffmpeg from "fluent-ffmpeg";
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,

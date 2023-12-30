@@ -5,16 +5,6 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 import { deleteVideo, uploadToS3 } from "../../config/s3Service.js";
-import { v4 as uuidv4 } from "uuid";
-import ffmpeg from "fluent-ffmpeg";
-import pegPath from "@ffmpeg-installer/ffmpeg";
-import probePath from "@ffprobe-installer/ffprobe";
-
-const ffmpegPath = pegPath;
-const ffmprobePath = probePath;
-
-ffmpeg.setFfmpegPath(ffmpegPath);
-ffmpeg.setFfprobePath(ffmprobePath);
 
 const imageMime = ["jpeg", "jpg", "png", "gif", "webp"];
 const videoMime = ["mp4", "mpeg", "ogg", "webm", "m4v", "mov", "mkv"];
