@@ -56,10 +56,15 @@ const uploadFiles = async (req, res) => {
 };
 
 const uploadVideo = async (req, res) => {
+  console.log({ files: req.files() });
+  console.log({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    Bucket: process.env.AWS_BUCKET_NAME,
+  });
   let path = [];
   try {
     const files = req.files();
-    console.log({ files });
     for await (const file of files) {
       let folder;
       const mime = file.mimetype.split("/").pop();

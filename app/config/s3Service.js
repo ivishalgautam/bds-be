@@ -14,12 +14,6 @@ const s3Client = new S3Client({
 });
 
 const uploadToS3 = async (file, folder) => {
-  console.log({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    Bucket: process.env.AWS_BUCKET_NAME,
-  });
-
   const key = `${folder}/${uuidv4()}-${file.filename
     .replaceAll(" ", "_")
     .replaceAll("'", "_")
