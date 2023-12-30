@@ -25,7 +25,7 @@ const uploadToS3 = async (file, folder) => {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: key,
     ContentType: file.mimetype,
-    Body: file,
+    Body: await file.toBuffer(),
   });
 
   try {
