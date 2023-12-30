@@ -7,4 +7,5 @@ export default async (fastify, options) => {
 
   fastify.post("/files", {}, controller.uploadFiles);
   fastify.post("/video", {}, controller.uploadVideo);
+  fastify.delete("/video", {}, controller.deleteFile);
 };

@@ -4,7 +4,7 @@ import pump from "pump";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
-import { uploadToS3 } from "../../config/s3Service.js";
+import { deleteVideo, uploadToS3 } from "../../config/s3Service.js";
 
 const imageMime = ["jpeg", "jpg", "png", "gif", "webp"];
 const videoMime = ["mp4", "mpeg", "ogg", "webm", "m4v", ".mov"];
@@ -76,6 +76,7 @@ const uploadVideo = async (req, res) => {
           .replaceAll("/", "_");
 
       const data = await uploadToS3(file, folder);
+      console.log({ data });
       path.push(data);
     }
     return res.send({
@@ -84,6 +85,17 @@ const uploadVideo = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.send(error);
+  }
+};
+
+const deleteFile = async (req, res) => {
+  // return console.log(req.query);
+  try {
+    await deleteVideo(req.query.key);
+    res.send({ message: "Video deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
   }
 };
 
@@ -146,4 +158,5 @@ export default {
   uploadFiles,
   getFile,
   uploadVideo,
+  deleteFile,
 };

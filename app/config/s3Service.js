@@ -1,5 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
@@ -30,4 +34,18 @@ const uploadToS3 = async (file, folder) => {
   }
 };
 
-export { uploadToS3 };
+const deleteVideo = async (key) => {
+  const command = new DeleteObjectCommand({
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: key,
+  });
+
+  try {
+    await s3Client.send(command);
+    console.log("video deleted");
+  } catch (error) {
+    console.log("error deleteing video", error);
+  }
+};
+
+export { uploadToS3, deleteVideo };
