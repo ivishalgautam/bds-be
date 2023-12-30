@@ -61,9 +61,10 @@ const uploadVideo = async (req, res) => {
     const files = req.files();
     for await (const file of files) {
       let folder;
-      const mime = file.mimetype.split("/").pop();
+      // const mime = file.mimetype.split("/").pop();
+      const mime = file.mimetype;
       console.log({ mime, file });
-      if (videoMime.includes(mime.toLowerCase())) {
+      if (mime.startsWith("video")) {
         folder = "public/videos";
       } else {
         throw new Error("File should be video.");
