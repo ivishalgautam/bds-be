@@ -59,6 +59,7 @@ const uploadVideo = async (req, res) => {
   let path = [];
   try {
     const files = req.files();
+    console.log({ files });
     for await (const file of files) {
       let folder;
       const mime = file.mimetype.split("/").pop();
@@ -88,7 +89,7 @@ const uploadVideo = async (req, res) => {
   }
 };
 
-const deleteFile = async (req, res) => {
+const deleteVideoFile = async (req, res) => {
   // return console.log(req.query);
   try {
     await deleteVideo(req.query.key);
@@ -158,5 +159,5 @@ export default {
   uploadFiles,
   getFile,
   uploadVideo,
-  deleteFile,
+  deleteVideoFile,
 };
