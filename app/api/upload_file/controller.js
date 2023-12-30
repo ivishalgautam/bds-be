@@ -5,6 +5,9 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 import { deleteVideo, uploadToS3 } from "../../config/s3Service.js";
+import { v4 as uuidv4 } from "uuid";
+import ffmpeg from "fluent-ffmpeg";
+// ffmpeg.setFfmpegPath("../../../ffmpeg");
 
 const imageMime = ["jpeg", "jpg", "png", "gif", "webp"];
 const videoMime = ["mp4", "mpeg", "ogg", "webm", "m4v", "mov", "mkv"];
@@ -63,12 +66,30 @@ const uploadVideo = async (req, res) => {
       let folder;
       // const mime = file.mimetype.split("/").pop();
       const mime = file.mimetype;
-      console.log({ mime, file });
+      console.log({ file });
       if (mime.startsWith("video")) {
         folder = "public/videos";
       } else {
         throw new Error("File should be video.");
       }
+
+      const compressedFilePath = `temp/${uuidv4()}-${file.filename}`;
+      // Perform video compression using ffmpeg
+      await new Promise((resolve, reject) => {
+        ffmpeg(file.toBuffer())
+          .videoCodec("libx264")
+          .audioCodec("libmp3lame")
+          .size("720x?")
+          .on("end", resolve)
+          .on("error", function (error) {
+            reject(error);
+          })
+          .save(compressedFilePath);
+      });
+
+      const compressedFileBuffer = await fs.promises.readFile(
+        compressedFilePath
+      );
 
       const filePath =
         `${folder}` +
@@ -77,7 +98,7 @@ const uploadVideo = async (req, res) => {
           .replaceAll("'", "_")
           .replaceAll("/", "_");
 
-      const data = await uploadToS3(file, folder);
+      const data = await uploadToS3(compressedFileBuffer, folder);
       path.push(data);
     }
     return res.send({
@@ -86,6 +107,8 @@ const uploadVideo = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.send(error);
+  } finally {
+    fs.unlinkSync(compressedFilePath);
   }
 };
 

@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
 import {
   DeleteObjectCommand,
   PutObjectCommand,
@@ -20,25 +21,11 @@ const uploadToS3 = async (file, folder) => {
     .replaceAll("'", "_")
     .replaceAll("/", "_")}`;
 
-  const compressedFilePath = `temp/${uuidv4()}-${file.filename}`;
-  // Perform video compression using ffmpeg
-  await new Promise((resolve, reject) => {
-    Ffmpeg(file.file)
-      .videoCodec("libx264")
-      .audioCodec("aac")
-      .outputOptions("-crf 28")
-      .on("end", resolve)
-      .on("error", reject)
-      .save(compressedFilePath);
-  });
-
-  const compressedFileBuffer = await fs.promises.readFile(compressedFilePath);
-
   const command = new PutObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: key,
     ContentType: file.mimetype,
-    Body: compressedFileBuffer,
+    Body: file,
   });
 
   try {
