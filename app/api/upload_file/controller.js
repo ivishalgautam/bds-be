@@ -7,7 +7,7 @@ import path, { dirname } from "path";
 import { deleteVideo, uploadToS3 } from "../../config/s3Service.js";
 
 const imageMime = ["jpeg", "jpg", "png", "gif", "webp"];
-const videoMime = ["mp4", "mpeg", "ogg", "webm", "m4v", ".mov"];
+const videoMime = ["mp4", "mpeg", "ogg", "webm", "m4v", "mov", "mkv"];
 const docsMime = [
   "pdf",
   "ppt",
@@ -82,7 +82,6 @@ const uploadVideo = async (req, res) => {
           .replaceAll("/", "_");
 
       const data = await uploadToS3(file, folder);
-      console.log({ data });
       path.push(data);
     }
     return res.send({
