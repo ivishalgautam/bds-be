@@ -104,7 +104,7 @@ const get = async (req, idenitifier) => {
   }
   if (req.user_data.role === "student") {
     joinQuery = `
-            INNER JOIN batches bt ON bt.students_id @>'["${idenitifier}"]'::jsonb
+            INNER JOIN batches bt ON bt.students_id @>'["${idenitifier}"]'::jsonb AND bt.id = rcd.batch_id
         `;
   }
   let query = `

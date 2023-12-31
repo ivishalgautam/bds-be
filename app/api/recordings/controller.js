@@ -70,17 +70,13 @@ const get = async (req, res) => {
         return res.code(404).send({ message: "teacher not exists" });
       }
       return res.send(await table.RecordingModel.get(req, teacher.id));
-      return;
     }
     if (req.user_data.role === "student") {
       const student = await table.StudentModel.getByUserId(req.user_data.id);
-      return res.send(await table.RecordingModel.get(req, student.id));
-      return;
+      const recordings = await table.RecordingModel.get(req, student.id);
+      return res.send(recordings);
     }
-    return res.send(
-      "permissions_not_allowed",
-      "You have not permissions to view recordings"
-    );
+    return res.send({ message: "You have not permissions to view recordings" });
   } catch (error) {
     console.log(error);
     return res.send(error);

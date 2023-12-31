@@ -57,7 +57,7 @@ const init = async (sequelize) => {
 };
 
 const create = async (req, user_ids = [], batch_id = null) => {
-  console.log({ id: req.user_data.id });
+  // return console.log({ req: req.body, user_ids, batch_id });
   return await GroupModel.create({
     group_name: req.body?.group_name || req.body?.batch_name,
     group_admin: req.body?.group_admin || [req.body.teacher_id],

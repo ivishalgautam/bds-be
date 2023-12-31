@@ -19,11 +19,13 @@ const create = async (req, res) => {
     if (req.user_data.role === "sub_franchisee") {
       const franchisee = await table.FranchiseeModel.getByUserId(req);
       if (user.role === "student") {
-        await table.StudentModel.create(
+        const student = await table.StudentModel.create(
           user.id,
           franchisee.franchisee_id,
           franchisee.id
         );
+        req.body.reward_points = 0;
+        await table.RewardModel.create(req, student.id);
       }
 
       if (user.role === "teacher") {
@@ -189,25 +191,35 @@ const getStudents = async (req, res) => {
       }
 
       const batches = await table.BatchModel.get(null, null, student.id);
-
-      const batchStudents = [];
+      const batchStudents = new Set();
 
       for (const { students_id } of batches) {
         for (const id of students_id) {
           if (student.id !== id) {
             const record = await table.StudentModel.getById(id);
-
             if (!record) {
-              return console.error("student not found");
+              continue;
             }
 
-            const batchStudent = await table.StudentModel.getDetailsById(id);
-            batchStudents.push(batchStudent[0]);
+            if (!isStudentInSet(batchStudents, id)) {
+              const batchStudent = await table.StudentModel.getDetailsById(id);
+              batchStudents.add(batchStudent[0]);
+            }
           }
         }
       }
+      // console.log(Array.from(batchStudents));
+      return res.send(Array.from(batchStudents));
+    }
 
-      res.send(batchStudents);
+    function isStudentInSet(studentSet, id) {
+      for (const existingStudent of studentSet) {
+        // Compare based on some unique property, like 'id'
+        if (existingStudent.id === id) {
+          return true;
+        }
+      }
+      return false;
     }
   } catch (error) {
     console.log(error);

@@ -78,10 +78,16 @@ const get = async (req, res) => {
   try {
     if (req.user_data.role === "student") {
       const record = await table.StudentModel.getByUserId(req.user_data.id);
+      if (!record) {
+        return res.code(404).send({ message: "Student not registered!" });
+      }
 
-      return res.send(await table.RewardModel.get(req, record.id));
+      const reward = await table.RewardModel.get(req, record.id);
+      if (!reward) {
+        res.send([]);
+      }
+      return res.send(reward);
     }
-    res.send(await table.RewardModel.get(req, null));
   } catch (error) {
     console.error(error);
     res.code(500).send(error);

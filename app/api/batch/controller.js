@@ -18,18 +18,22 @@ const create = async (req, res) => {
             "master franchisee not exists. Please contact us our support team",
         });
       }
+
       if (!req.body.teacher_id) {
         return res
           .code(400)
           .send({ message: "teacher_id is required parameter" });
       }
+
       teacher = await table.TeacherModel.getById(req.body.teacher_id);
+
       if (!teacher) {
         return res.code(404).send({
           message:
             "teacher not exists. Please create new teacher or assign valid teacher",
         });
       }
+
       user_ids.push(teacher.user_id);
     }
 
@@ -47,9 +51,10 @@ const create = async (req, res) => {
     for (const student_id of req.body.students_ids) {
       const student = await table.StudentModel.getById(student_id);
       if (!student) {
-        return res.send({
-          message: `student not found. Invalid student id:- ${student_id}`,
-        });
+        // return res.send({
+        //   message: `student not found. Invalid student id:- ${student_id}`,
+        // });
+        continue;
       }
       user_ids.push(student.user_id);
     }
@@ -142,15 +147,21 @@ const update = async (req, res) => {
       completed: [...cs.day_wise.map((i) => i.is_completed)],
     });
   });
-
+  // return console.log({ body: req.body });
   try {
-    let course;
     let user_ids = [];
     const record = await table.BatchModel.getById(req);
     if (!record) {
       return res
         .code(404)
         .send({ message: "batch not exists in our database" });
+    }
+
+    let course = await table.CourseModel.getById(req);
+    if (!course) {
+      return res
+        .code(404)
+        .send({ message: "course not exists. Please assign valid course" });
     }
 
     if (req.body?.teacher_id) {
@@ -175,14 +186,13 @@ const update = async (req, res) => {
         if (!record.students_id.includes(student_id)) {
           // console.log(student.user_id);
           // user_ids.push(student.user_id);
-          await new Promise(async (resolve) => {
-            const user = await table.UserModel.getById(null, student.user_id);
+          const user = await table.UserModel.getById(null, student.user_id);
 
-            await sendMail(
-              user.email,
-              "Course assigned",
-              "",
-              `<html>
+          await sendMail(
+            user.email,
+            "Course assigned",
+            "",
+            `<html>
               <body style="font-family: Arial, sans-serif; background-color: #f2f2f2; text-align: center; padding: 20px;">
                 <h1 style="color: #3498db;">Course assigned</h1>
                 <p style="margin-top: 20px;">
@@ -190,36 +200,12 @@ const update = async (req, res) => {
                 </p>
               </body>
             </html>`
-            );
-
-            resolve();
-          });
+          );
         }
       }
     }
 
-    if (user_ids) {
-      user_ids.forEach(async (userId) => {});
-    }
-
-    if (req.body?.course_id) {
-      course = await table.CourseModel.getById(req);
-      if (!course) {
-        return res
-          .code(404)
-          .send({ message: "course not exists. Please assign valid course" });
-      }
-    }
-
     await table.BatchModel.update(req, course.course_name);
-
-    // batchWeeksComplete.forEach((bw) => {
-    //   if (bw.completed.every((i) => i)) {
-    //     // await table.QuizModel.update(null,)
-    //   } else {
-    //     console.log(false);
-    //   }
-    // });
 
     return res.send({ message: "success" });
   } catch (error) {
@@ -252,7 +238,10 @@ const get = async (req, res) => {
     let student;
 
     if (req.user_data.role === "sub_franchisee") {
-      franchisee = await table.FranchiseeModel.getByUserId(req);
+      franchisee = await table.FranchiseeModel.getByUserId(
+        req,
+        req?.user_data?.id
+      );
       if (!franchisee) {
         return res.code(404).send({
           message:

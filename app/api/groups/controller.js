@@ -13,10 +13,12 @@ const getUserGroups = async (req, res) => {
 
 const create = async (req, res) => {
   const { group_users } = req.body;
-  // console.log({ invite: req.body });
   try {
+    if (group_users?.length === 0) {
+      return res.code(400).send({ message: "Please select atleast 1 member" });
+    }
+
     const { total_groups } = await table.GroupModel.countUserGroup(req);
-    // return console.log({ userGroupCount });
 
     if (total_groups >= 2) {
       return res
@@ -32,6 +34,7 @@ const create = async (req, res) => {
       }
 
       const group = await table.GroupModel.create(req);
+      console.log({ group });
 
       await table.GroupInvtModel.create(
         group.id,
