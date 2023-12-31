@@ -104,7 +104,7 @@ const getUnassignedCourses = async (req, res) => {
         .filter((a) => !studentCourses?.map((i) => i.course_id).includes(a));
 
       if (unAssignedCourses.length > 0) {
-        for (const courseId of unAssignedCourses) {
+        for await (const courseId of unAssignedCourses) {
           let is_queried = false;
           const data = await table.CourseModel.getById({
             body: { course_id: courseId },
@@ -188,6 +188,9 @@ const getUnassignedCourses = async (req, res) => {
         }
       }
     }
+
+    console.log({ courses });
+
     res.send(courses);
   } catch (error) {
     console.error(error);
