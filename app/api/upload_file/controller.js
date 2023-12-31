@@ -87,8 +87,6 @@ const uploadVideo = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.send(error);
-  } finally {
-    fs.unlinkSync(compressedFilePath);
   }
 };
 
