@@ -23,7 +23,7 @@ export default (app) => {
   app.register(cors, { origin: "*" });
   app.register(pg_database);
   app.register(fastifyMultipart, {
-    limits: { fileSize: 1024 * 1024 * 1024 }, // Set the limit to 1 GB or adjust as needed
+    limits: { fileSize: 5 * 1024 * 1024 * 1024 }, // Set the limit to 5 GB or adjust as needed
   });
   // Increase the payload size limit
   app.register(routes, { prefix: "v1" });
