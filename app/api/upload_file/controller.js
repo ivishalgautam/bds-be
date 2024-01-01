@@ -61,10 +61,16 @@ const uploadVideo = async (req, res) => {
   try {
     const files = req.files();
     for await (const file of files) {
+      const fileSize = parseInt(
+        (await file.toBuffer()).length / Math.pow(1024, 2)
+      );
+
+      if (fileSize > 500) {
+        throw new Error("File size should be less then 500 MB");
+      }
+
       let folder;
-      // const mime = file.mimetype.split("/").pop();
       const mime = file.mimetype;
-      // return console.log({ file: file.path });
       if (mime.startsWith("video")) {
         folder = "public/videos";
       } else {

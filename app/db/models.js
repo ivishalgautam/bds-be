@@ -25,6 +25,7 @@ import LevelModel from "./models/level.model.js";
 import RewardModel from "./models/reward.model.js";
 import ProductEnquiryModel from "./models/product-enquiry.model.js";
 import CourseEnquiryModel from "./models/course-enquiry.model.js";
+import MeetingModel from "./models/meeting.model.js";
 
 export default {
   UserModel: UserModel,
@@ -54,4 +55,5 @@ export default {
   RewardModel: RewardModel,
   ProductEnquiryModel: ProductEnquiryModel,
   CourseEnquiryModel: CourseEnquiryModel,
+  MeetingModel: MeetingModel,
 };

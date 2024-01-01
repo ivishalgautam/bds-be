@@ -26,11 +26,9 @@ const update = async (req, res) => {
     const teacher_id = (await table.TeacherModel.getByUserId(req.user_data.id))
       .id;
     if (!teacher_id) {
-      return res.send(
-        "permission_not_allow",
-        "you have not permissions to upload video"
-      );
-      return;
+      return res
+        .code(400)
+        .send({ message: "you have not permissions to upload video" });
     }
     const record = await table.RecordingModel.getById(req);
     if (!record) {

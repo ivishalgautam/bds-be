@@ -87,6 +87,7 @@ const get = async (req, res) => {
 };
 
 const update = async (req, res) => {
+  console.log({ body: req.body });
   try {
     const record = await table.ScheduleModel.getByScheduleId(
       req.params.schedule_id
@@ -96,25 +97,30 @@ const update = async (req, res) => {
       return res.code(404).send({ message: "schedule not found!" });
     }
 
+    const batch = await table.BatchModel.getById(req, req.body.batch_id);
+
+    if (!batch) {
+      return res.code(404).send({ message: "batch not found!" });
+    }
+
+    req.body.start_time = `${req.body.start_time}T${batch.start_time}`;
+
     const scheduleExist = await table.ScheduleModel.getByStartTimeAndBatchId(
       req,
       record?.batch_id
     );
-    // console.log(JSON.stringify(scheduleExist));
 
-    if (scheduleExist) {
-      if (req.params.schedule_id === scheduleExist?.id) {
-        await table.ScheduleModel.update(req, record?.batch_id);
-      } else {
-        return res.code(409).send({
-          message: `schedule exist for '${new Date(
-            req.body.start_time
-          ).toLocaleString()}'`,
-        });
-      }
+    if (!scheduleExist || req.params.schedule_id === scheduleExist?.id) {
+      const data = await table.ScheduleModel.update(req, record?.batch_id);
+      console.log({ updated: data });
+      res.send({ message: "schedule updated" });
+    } else {
+      return res.code(409).send({
+        message: `schedule exist for '${new Date(
+          req.body.start_time
+        ).toLocaleString()}'`,
+      });
     }
-
-    res.send({ message: "schedule updated" });
   } catch (error) {
     console.error(error);
     res.code(500).send({ error });

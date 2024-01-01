@@ -76,6 +76,7 @@ const getById = async (req, res) => {
 const getUnassignedCourses = async (req, res) => {
   let unAssignedCourses = [];
   let courses = [];
+  let is_queried = false;
   try {
     if (req.user_data.role === "student") {
       const student = await table.StudentModel.getByUserId(req.user_data.id);
@@ -105,7 +106,6 @@ const getUnassignedCourses = async (req, res) => {
 
       if (unAssignedCourses.length > 0) {
         for await (const courseId of unAssignedCourses) {
-          let is_queried = false;
           const data = await table.CourseModel.getById({
             body: { course_id: courseId },
           });
@@ -142,7 +142,6 @@ const getUnassignedCourses = async (req, res) => {
 
       const subCourses =
         await table.CourseAssignModel.getAllCourseByFranchiseeId(sub.user_id);
-
       const assignedToMaster =
         await table.CourseAssignModel.getAllCourseByFranchiseeId(
           master.dataValues.user_id
@@ -153,11 +152,26 @@ const getUnassignedCourses = async (req, res) => {
         .filter((i) => !subCourses.map((c) => c.course_id).includes(i));
 
       if (unAssignedCourses.length > 0) {
-        for (const courseId of unAssignedCourses) {
-          const data = await table.CourseModel.getById({
-            body: { course_id: courseId },
+        for await (const courseId of unAssignedCourses) {
+          await new Promise(async (resolve) => {
+            const data = await table.CourseModel.getById({
+              body: { course_id: courseId },
+            });
+
+            const record = await table.CourseEnquiryModel.exist(
+              req.user_data.id,
+              courseId,
+              master.dataValues.user_id
+            );
+
+            if (record) {
+              is_queried = true;
+            }
+
+            courses.push(Object.assign(data.dataValues, { is_queried }));
+
+            resolve();
           });
-          courses.push(data.dataValues);
         }
       }
     }
@@ -180,16 +194,29 @@ const getUnassignedCourses = async (req, res) => {
         .filter((i) => !masterCourses.map((c) => c.course_id).includes(i));
 
       if (unAssignedCourses.length > 0) {
-        for (const courseId of unAssignedCourses) {
-          const data = await table.CourseModel.getById({
-            body: { course_id: courseId },
+        for await (const courseId of unAssignedCourses) {
+          await new Promise(async (resolve) => {
+            const data = await table.CourseModel.getById({
+              body: { course_id: courseId },
+            });
+
+            const record = await table.CourseEnquiryModel.exist(
+              req.user_data.id,
+              courseId,
+              null
+            );
+
+            if (record) {
+              is_queried = true;
+            }
+
+            courses.push(Object.assign(data.dataValues, { is_queried }));
+
+            resolve();
           });
-          courses.push(data.dataValues);
         }
       }
     }
-
-    console.log({ courses });
 
     res.send(courses);
   } catch (error) {
@@ -241,7 +268,7 @@ const createEnquiry = async (req, res) => {
         null,
         sub?.dataValues.franchisee_id
       );
-
+      console.log({ fran });
       const record = await table.CourseEnquiryModel.exist(
         req.user_data.id,
         req.body.course_id,
