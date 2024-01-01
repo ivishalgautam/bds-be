@@ -121,6 +121,7 @@ const getUnassignedCourses = async (req, res) => {
           }
 
           courses.push(Object.assign(data.dataValues, { is_queried }));
+          is_queried = false;
         }
       }
     }
@@ -152,26 +153,23 @@ const getUnassignedCourses = async (req, res) => {
         .filter((i) => !subCourses.map((c) => c.course_id).includes(i));
 
       if (unAssignedCourses.length > 0) {
-        for await (const courseId of unAssignedCourses) {
-          await new Promise(async (resolve) => {
-            const data = await table.CourseModel.getById({
-              body: { course_id: courseId },
-            });
-
-            const record = await table.CourseEnquiryModel.exist(
-              req.user_data.id,
-              courseId,
-              master.dataValues.user_id
-            );
-
-            if (record) {
-              is_queried = true;
-            }
-
-            courses.push(Object.assign(data.dataValues, { is_queried }));
-
-            resolve();
+        for (const courseId of unAssignedCourses) {
+          const data = await table.CourseModel.getById({
+            body: { course_id: courseId },
           });
+
+          const record = await table.CourseEnquiryModel.exist(
+            req.user_data.id,
+            courseId,
+            master.dataValues.user_id
+          );
+
+          if (record) {
+            is_queried = true;
+          }
+
+          courses.push(Object.assign(data.dataValues, { is_queried }));
+          is_queried = false;
         }
       }
     }
@@ -195,25 +193,22 @@ const getUnassignedCourses = async (req, res) => {
 
       if (unAssignedCourses.length > 0) {
         for await (const courseId of unAssignedCourses) {
-          await new Promise(async (resolve) => {
-            const data = await table.CourseModel.getById({
-              body: { course_id: courseId },
-            });
-
-            const record = await table.CourseEnquiryModel.exist(
-              req.user_data.id,
-              courseId,
-              null
-            );
-
-            if (record) {
-              is_queried = true;
-            }
-
-            courses.push(Object.assign(data.dataValues, { is_queried }));
-
-            resolve();
+          const data = await table.CourseModel.getById({
+            body: { course_id: courseId },
           });
+
+          const record = await table.CourseEnquiryModel.exist(
+            req.user_data.id,
+            courseId,
+            null
+          );
+
+          if (record) {
+            is_queried = true;
+          }
+
+          courses.push(Object.assign(data.dataValues, { is_queried }));
+          is_queried = false;
         }
       }
     }
