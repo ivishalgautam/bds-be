@@ -27,7 +27,7 @@ const assignCourse = async (req, res) => {
     const enquiryRecord = await table.CourseEnquiryModel.exist(
       assignedTo?.dataValues.id,
       record?.dataValues.id,
-      req.user_data.id
+      assignedTo.role === "master_franchisee" ? null : req.user_data.id
     );
 
     // return console.log({ enquiryRecord });
