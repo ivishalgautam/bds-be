@@ -48,8 +48,8 @@ const create = async (req, res) => {
     await table.ScheduleModel.create(
       req,
       batch.id,
-      batch.start_time,
-      batch.end_time
+      batch.start_time
+      // batch.end_time
     );
     res.send({ message: "schedule created" });
   } catch (error) {

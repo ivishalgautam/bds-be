@@ -37,7 +37,7 @@ const init = async (sequelize) => {
       },
       end_time: {
         type: sequelizeFwk.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {
@@ -48,14 +48,14 @@ const init = async (sequelize) => {
   await ScheduleModel.sync({ alter: true });
 };
 
-const create = async (req, batch_id, start_time, end_time) => {
+const create = async (req, batch_id, start_time) => {
   // console.log({ start_time, end_time });
   return await ScheduleModel.create({
     batch_id: req.body.batch_id || batch_id,
     schedule_name: req.body.schedule_name,
     schedule_desc: req.body.schedule_desc,
     start_time: `${req.body.start_time}T${start_time}`,
-    end_time: `${req.body.end_time}T${end_time}`,
+    // end_time: `${req.body.end_time}T${end_time}`,
   });
 };
 
@@ -115,7 +115,7 @@ const update = async (req, batch_id) => {
       schedule_name: req?.body?.schedule_name,
       schedule_desc: req?.body?.schedule_desc,
       start_time: req?.body?.start_time,
-      end_time: req?.body?.end_time,
+      // end_time: req?.body?.end_time,
     },
     {
       where: {
