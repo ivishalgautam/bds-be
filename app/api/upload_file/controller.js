@@ -156,7 +156,8 @@ const getFile = async (req, res) => {
   }
 
   try {
-    return res.send(await fs.readFileSync(publicPath));
+    const filePath = await fs.readFileSync(publicPath);
+    return res.send(filePath);
   } catch (error) {
     console.error({ error });
   }

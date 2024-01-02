@@ -23,7 +23,54 @@ const update = async (req, res) => {
         .code(404)
         .send({ message: "course not exists in our database" });
     }
-    return res.send(await table.CourseModel.update(req));
+
+    const data = await table.CourseModel.update(req);
+
+    const course_id = data?.[1]?.dataValues.id;
+    const course_syllabus = data?.[1]?.dataValues.course_syllabus;
+
+    const batch = await table.BatchModel.getByCourseId(course_id);
+    const batch_syllabus = batch.course_syllabus;
+
+    function updateSyllabus(courseSyllabus, batchSyllabus) {
+      const updatedSyllabus = [];
+
+      for (let i = 0; i < courseSyllabus.length; i++) {
+        const updateBatch = [];
+
+        for (let j = 0; j < courseSyllabus[i].day_wise.length; j++) {
+          const courseDay = courseSyllabus[i].day_wise[j];
+          const batchDay = batchSyllabus[i].day_wise[j];
+
+          // Copy each item from course syllabus to batch syllabus without changing "is_completed"
+          const updatedDay = {
+            days: courseDay.days,
+            heading: courseDay.heading,
+            description: courseDay.description,
+            is_completed: batchDay.is_completed, // Preserve the "is_completed" property from batch syllabus
+          };
+
+          updateBatch.push(updatedDay);
+        }
+
+        updatedSyllabus.push({
+          weeks: courseSyllabus[i].weeks,
+          day_wise: updateBatch,
+        });
+      }
+
+      return updatedSyllabus;
+    }
+    const updatedSyllabus = updateSyllabus(course_syllabus, batch_syllabus);
+
+    if (data) {
+      await table.BatchModel.updateBatchSyllabusById(
+        batch?.id,
+        updatedSyllabus
+      );
+    }
+
+    return res.send(data);
   } catch (error) {
     console.log(error);
     return res.send(error);
@@ -65,7 +112,6 @@ const getById = async (req, res) => {
         .code(404)
         .send({ message: "course not exists in our database" });
     }
-    console.log({ record });
     return res.send(record);
   } catch (error) {
     console.log(error);

@@ -51,9 +51,6 @@ const create = async (req, res) => {
     for (const student_id of req.body.students_ids) {
       const student = await table.StudentModel.getById(student_id);
       if (!student) {
-        // return res.send({
-        //   message: `student not found. Invalid student id:- ${student_id}`,
-        // });
         continue;
       }
       user_ids.push(student.user_id);

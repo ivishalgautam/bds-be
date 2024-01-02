@@ -34,6 +34,7 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   let record;
+  let batch;
   try {
     record = await table.QuizModel.getById(req);
     if (!record) {
@@ -46,7 +47,11 @@ const update = async (req, res) => {
           message: "Course not found. Please enter a valid course name",
         });
       }
+
+      batch = await table.BatchModel.getByCourseId(record.id);
     }
+
+    console.log({ record, batch });
     return res.send(await table.QuizModel.update(req));
   } catch (error) {
     console.log(error);
@@ -78,6 +83,20 @@ const get = async (req, res) => {
   }
 };
 
+const getByCourseId = async (req, res) => {
+  try {
+    if (!req.params.course_id) {
+      return res.send([]);
+    }
+    const data = await table.QuizModel.getByCourseId(req.params.course_id);
+
+    return res.send(data);
+  } catch (error) {
+    console.log(error);
+    return res.send(error);
+  }
+};
+
 const getById = async (req, res) => {
   try {
     const record = await table.QuizModel.getById(req);
@@ -97,4 +116,5 @@ export default {
   deleteById: deleteById,
   get: get,
   getById: getById,
+  getByCourseId: getByCourseId,
 };

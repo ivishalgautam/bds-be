@@ -172,6 +172,14 @@ const getById = async (req, batch_id) => {
   });
 };
 
+const getByCourseId = async (course_id) => {
+  return await BatchModel.findOne({
+    where: {
+      course_id: course_id,
+    },
+  });
+};
+
 const update = async (req, course_name) => {
   // console.log("req.body");
   return await BatchModel.update(
@@ -186,6 +194,22 @@ const update = async (req, course_name) => {
     {
       where: {
         id: req.params.id,
+      },
+      returning: true,
+      plain: true,
+    }
+  );
+};
+
+const updateBatchSyllabusById = async (batch_id, syllabus) => {
+  // console.log("req.body");
+  return await BatchModel.update(
+    {
+      course_syllabus: syllabus,
+    },
+    {
+      where: {
+        id: batch_id,
       },
       returning: true,
       plain: true,
@@ -229,4 +253,6 @@ export default {
   update,
   deleteById,
   countBatch,
+  getByCourseId,
+  updateBatchSyllabusById,
 };

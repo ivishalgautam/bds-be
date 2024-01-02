@@ -64,6 +64,7 @@ const get = async (req, res) => {
       }
 
       products.push(Object.assign(product.dataValues, { is_queried }));
+      is_queried = false;
     }
 
     return res.send(products);

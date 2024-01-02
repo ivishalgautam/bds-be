@@ -34,7 +34,7 @@ const init = async (sequelize) => {
         defaultValue: 0.0,
       },
       course_description: {
-        type: sequelizeFwk.DataTypes.STRING,
+        type: sequelizeFwk.DataTypes.TEXT,
         allowNull: false,
       },
       course_thumbnail: {
