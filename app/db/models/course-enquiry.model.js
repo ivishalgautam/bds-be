@@ -89,7 +89,7 @@ const get = async (req, enq_to_id) => {
   }
 
   let query = `
-        SELECT 
+        SELECT
             ce.*,
             usr.email,
             usr.mobile_number,

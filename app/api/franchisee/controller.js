@@ -1,29 +1,31 @@
 "use strict";
 
 import table from "../../db/models.js";
+import sendMail from "../../helpers/mailer.js";
 
 const create = async (req, res) => {
-  console.log(req.params);
   let record;
   let franchisee_id;
+  console.log({ body: req.body });
   try {
     record = await table.UserModel.getById(undefined, req.body.user_id);
     if (!record) {
       return res.send({ message: "user not exists. Please create user" });
     }
+
     if (req.user_data.role === "master_franchisee") {
       const master = await table.FranchiseeModel.getByUserId(req);
       franchisee_id = master.id;
     }
 
     if (req.body?.franchisee_id) {
-      record = await table.FranchiseeModel.getById(
+      const fran = await table.FranchiseeModel.getById(
         undefined,
         req.body.franchisee_id
       );
       // console.log({ franchisee: record });
 
-      if (!record) {
+      if (!fran) {
         return res.send({
           message:
             "Master franchisee not exists. Please enter a valid franchisee",
@@ -31,16 +33,38 @@ const create = async (req, res) => {
       }
     }
 
-    const franchisee = await table.FranchiseeModel.create(req, franchisee_id);
+    const data = await table.FranchiseeModel.create(req, franchisee_id);
 
-    if (record.role === "sub_franchisee") {
-      await table.GroupModel.createCommunityGroup(
-        franchisee.franchisee_name,
-        record.id
+    if (data) {
+      await sendMail(
+        record?.email,
+        "BDS Credentials",
+        "",
+        `<html>
+        <body style="font-family: Arial, sans-serif; background-color: #f2f2f2; text-align: center; padding: 20px;">
+        <h1 style="text-align: center;">Credentials for ${
+          record.role === "master_franchisee"
+            ? "Master Franchisee"
+            : "Franchisee"
+        }</h1>
+        <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 10px;">Username: '${
+          record.username
+        }' and Password: '${req.body.password}'</p>
+        <a href="https://bdsconnectcc.in/login" style="display: inline-block; padding: 10px 20px; font-family: Arial, sans-serif; font-size: 16px; color: #fff; background-color: #4caf50; text-decoration: none; border-radius: 4px; margin-bottom: 10px;">Login</a>
+        <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 10px;">Feel free to log in and explore our platform.</p>
+        <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 0;">Best regards,<br>BDS Team</p>
+        </body>
+        </html>`
       );
     }
+    res.send({ message: "New Franchisee created." });
 
-    return res.send({ message: "New Franchisee created." });
+    // if (record.role === "sub_franchisee") {
+    //   await table.GroupModel.createCommunityGroup(
+    //     franchisee.franchisee_name,
+    //     record.id
+    //   );
+    // }
   } catch (error) {
     console.log(error);
     return res.send(error);

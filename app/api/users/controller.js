@@ -2,6 +2,7 @@
 
 import table from "../../db/models.js";
 import hash from "../../lib/encryption/index.js";
+import sendMail from "../../helpers/mailer.js";
 
 const create = async (req, res) => {
   try {
@@ -13,7 +14,6 @@ const create = async (req, res) => {
           "User already exists with username. Please try with different username",
       });
     }
-
     const user = await table.UserModel.create(req);
 
     if (req.user_data.role === "sub_franchisee") {
@@ -37,7 +37,27 @@ const create = async (req, res) => {
       }
     }
 
-    return res.send(user);
+    if (user) {
+      await sendMail(
+        user?.email,
+        "BDS Credentials",
+        "",
+        `<html>
+        <body style="font-family: Arial, sans-serif; background-color: #f2f2f2; text-align: center; padding: 20px;">
+        <h1 style="text-align: center;">Credentials for ${
+          user.role === "student" ? "Student" : "Teacher"
+        }</h1>
+        <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 10px;">Username: '${
+          user.username
+        }' and Password: '${req.body.password}'</p>
+        <a href="https://bdsconnectcc.in/login" style="display: inline-block; padding: 10px 20px; font-family: Arial, sans-serif; font-size: 16px; color: #fff; background-color: #4caf50; text-decoration: none; border-radius: 4px; margin-bottom: 10px;">Login</a>
+        <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 10px;">Feel free to log in and explore our platform.</p>
+        <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 0;">Best regards,<br>BDS Team</p>
+      </body>
+      </html>`
+      );
+    }
+    res.send(user);
   } catch (error) {
     console.log(error);
     return res.send(error);
