@@ -82,7 +82,7 @@ const exist = async (enq_from_id, course_id, enq_to_id = null) => {
 };
 
 const get = async (req, enq_to_id) => {
-  let whereQuery = `WHERE ce.enquiry_to_id is null AND ce.for_admin = true`;
+  let whereQuery = "";
 
   if (req.user_data.role !== "admin") {
     whereQuery = `WHERE ce.enquiry_to_id = '${enq_to_id}'`;

@@ -292,9 +292,7 @@ const createEnquiry = async (req, res) => {
       );
 
       if (record) {
-        return res
-          .code(409)
-          .send({ message: "You already enquired for this course!" });
+        return res.code(409).send({ message: "Enquiry sent already!" });
       }
 
       data = await table.CourseEnquiryModel.create(
@@ -317,9 +315,7 @@ const createEnquiry = async (req, res) => {
       );
 
       if (record) {
-        return res
-          .code(409)
-          .send({ message: "You already enquired for this course!" });
+        return res.code(409).send({ message: "Enquiry sent already!" });
       }
 
       data = await table.CourseEnquiryModel.create(
@@ -337,9 +333,7 @@ const createEnquiry = async (req, res) => {
       );
 
       if (record) {
-        return res
-          .code(409)
-          .send({ message: "You already enquired for this course!" });
+        return res.code(409).send({ message: "Enquiry sent already!" });
       }
 
       data = await table.CourseEnquiryModel.create(req, null, true);
