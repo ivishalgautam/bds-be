@@ -49,7 +49,7 @@ const create = async (req, res) => {
                     <li><strong>Passcode:</strong> ${meeting?.passcode}</li>
                   </ul>
                   <p style="color: #555;">To join the meeting, simply click on the following link:</p>
-                  <a style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.3s ease;" href="${data?.join_url}">Join Zoom Meeting</a>
+                  <a style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.3s ease;" href="${meeting?.join_url}">Join Zoom Meeting</a>
                   <p style="color: #555;">If prompted, use the following details to join the meeting:</p>
                   <p style="color: #555;">We look forward to your participation in this meeting. If you have any questions or concerns, please feel free to reach out.</p>
                 </div>
