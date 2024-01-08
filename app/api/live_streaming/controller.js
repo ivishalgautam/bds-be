@@ -40,13 +40,13 @@ const create = async (req, res) => {
           `<html lang="en">
               <body style="font-family: 'Arial', sans-serif; background-color: #f5f5f5; margin: 0; padding: 0;">
                 <div style="max-width: 600px; margin: 50px auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-                  <h2 style="color: #333;">Invitation to Join Zoom Meeting - ${data?.meeting_topic}</h2>
+                  <h2 style="color: #333;">Invitation to Join Zoom Meeting - ${meeting?.meeting_topic}</h2>
                   <p style="color: #555;">I hope this message finds you well. We would like to invite you to an upcoming Zoom meeting with the following details:</p>
                   <ul>
-                    <li><strong>Meeting Topic:</strong> ${data?.meeting_topic}</li>
-                    <li><strong>Start Time:</strong> ${data?.start_time}</li>
-                    <li><strong>Join url:</strong> ${data?.join_url}</li>
-                    <li><strong>Passcode:</strong> ${data?.passcode}</li>
+                    <li><strong>Meeting Topic:</strong> ${meeting?.meeting_topic}</li>
+                    <li><strong>Start Time:</strong> ${meeting?.start_time}</li>
+                    <li><strong>Join url:</strong> ${meeting?.join_url}</li>
+                    <li><strong>Passcode:</strong> ${meeting?.passcode}</li>
                   </ul>
                   <p style="color: #555;">To join the meeting, simply click on the following link:</p>
                   <a style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px; transition: background-color 0.3s ease;" href="${data?.join_url}">Join Zoom Meeting</a>
