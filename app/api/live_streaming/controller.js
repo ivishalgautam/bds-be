@@ -17,6 +17,8 @@ const create = async (req, res) => {
       meeting_type = "SCHEDULED";
     }
 
+    console.log({ meeting });
+
     const batch = await table.BatchModel.getById(undefined, req.body.batch_id);
 
     if (!batch) {
