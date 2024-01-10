@@ -8,7 +8,33 @@ const create = async (req, res) => {
   try {
     let status;
     let meeting_type;
-    const meeting = await zoom.meeting(req);
+    let user;
+    let meeting;
+
+    let userExist = await table.ZoomUserModel.getByUserId(req.user_data.id);
+
+    // return console.log({ userExist });
+
+    if (userExist) {
+      user = userExist;
+      meeting = await zoom.meeting(req, user.host_id);
+    } else {
+      user = await zoom.user(req);
+      meeting = await zoom.meeting(req, user.id);
+      await table.ZoomUserModel.create(req.user_data.id, user.id);
+      // return res.status(409).send({ message });
+    }
+
+    if (
+      meeting.response.status === 404 &&
+      meeting.response.data.code === 1001
+    ) {
+      return res.code(404).send({
+        message:
+          "You need to accept the zoom request received on your mail id to create meetings",
+      });
+    }
+
     if (req.body.meeting_type === 1) {
       status = "COMPLETED";
       meeting_type = "INSTANT";
@@ -16,8 +42,6 @@ const create = async (req, res) => {
       status = "PENDING";
       meeting_type = "SCHEDULED";
     }
-
-    console.log({ meeting });
 
     const batch = await table.BatchModel.getById(undefined, req.body.batch_id);
 
@@ -89,6 +113,28 @@ const create = async (req, res) => {
   }
 };
 
+const get = async (req, res) => {
+  try {
+    const meetings = await table.MeetingModel.get(req.user_data.id);
+    res.send(meetings);
+  } catch (error) {
+    console.error({ error });
+    res.code(500).send(error);
+  }
+};
+
+const deleteById = async (req, res) => {
+  try {
+    await table.MeetingModel.deleteById(req.params.id);
+    res.send({ message: "Meeting deleted" });
+  } catch (error) {
+    console.error({ error });
+    res.code(500).send(error);
+  }
+};
+
 export default {
   create: create,
+  get: get,
+  deleteById: deleteById,
 };

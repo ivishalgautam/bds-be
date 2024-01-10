@@ -48,6 +48,15 @@ const init = async (sequelize) => {
           key: "id",
         },
       },
+      batch_id: {
+        allowNull: false,
+        type: sequelizeFwk.DataTypes.UUID,
+        onDelete: "CASCADE",
+        references: {
+          model: constants.models.BATCH_TABLE,
+          key: "id",
+        },
+      },
       passcode: {
         allowNull: false,
         type: sequelizeFwk.DataTypes.BIGINT,
@@ -70,9 +79,35 @@ const create = async (req, meeting) => {
     start_url: meeting.start_url,
     join_url: meeting.join_url,
     meeting_by: req.user_data.id,
+    batch_id: req.body.batch_id,
     start_time: meeting.start_time,
     passcode: meeting.password,
   });
 };
 
-export default { init: init, create: create };
+const get = async (user_id) => {
+  const query = `
+          SELECT 
+              m.*,
+              btc.batch_name
+            FROM meetings m
+            LEFT JOIN users usr on usr.id = m.meeting_by
+            LEFT JOIN batches btc on btc.id = m.batch_id
+            WHERE m.meeting_by = '${user_id}'
+            ORDER BY m.created_at DESC;
+  `;
+
+  return await MeetingModel.sequelize.query(query, {
+    type: sequelizeFwk.QueryTypes.SELECT,
+  });
+};
+
+const deleteById = async (id) => {
+  return MeetingModel.destroy({
+    where: {
+      id: id,
+    },
+  });
+};
+
+export default { init: init, create: create, get: get, deleteById: deleteById };

@@ -36,6 +36,7 @@ const create = async (req, res) => {
     const data = await table.FranchiseeModel.create(req, franchisee_id);
 
     if (data) {
+      console.log("mail sent fran");
       await sendMail(
         record?.email,
         "BDS Credentials",

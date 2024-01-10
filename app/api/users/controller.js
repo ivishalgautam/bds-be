@@ -3,8 +3,10 @@
 import table from "../../db/models.js";
 import hash from "../../lib/encryption/index.js";
 import sendMail from "../../helpers/mailer.js";
+import zoom from "../../helpers/zoom.js";
 
 const create = async (req, res) => {
+  let zoomUser;
   try {
     const record = await table.UserModel.getByUsername(req);
 
@@ -29,6 +31,8 @@ const create = async (req, res) => {
       }
 
       if (user.role === "teacher") {
+        zoomUser = await zoom.user(req);
+
         await table.TeacherModel.create(
           user.id,
           franchisee.franchisee_id,
@@ -37,7 +41,9 @@ const create = async (req, res) => {
       }
     }
 
-    if (user) {
+    if (user.role === "teacher" || user.role === "student") {
+      console.log("mail sent");
+
       await sendMail(
         user?.email,
         "BDS Credentials",
@@ -53,6 +59,14 @@ const create = async (req, res) => {
         <a href="https://bdsconnectcc.in/login" style="display: inline-block; padding: 10px 20px; font-family: Arial, sans-serif; font-size: 16px; color: #fff; background-color: #4caf50; text-decoration: none; border-radius: 4px; margin-bottom: 10px;">Login</a>
         <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 10px;">Feel free to log in and explore our platform.</p>
         <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 0;">Best regards,<br>BDS Team</p>
+
+        <p style="backgroud: red; color: white; padding: 10px;">
+        ${
+          user.role === "teacher" && zoomUser.id
+            ? "Note: Accept invitation by zoom to be a part of BDS connect to create zoom meetings."
+            : ""
+        }
+       </p>
       </body>
       </html>`
       );

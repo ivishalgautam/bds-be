@@ -9,12 +9,12 @@ const zoom = {
         config.zoom_oauth_url,
         qs.stringify({
           grant_type: "account_credentials",
-          account_id: config.zoom_account_id,
+          account_id: "xUu2ZcT7S_GEfx_SRangLQ",
         }),
         {
           headers: {
             Authorization: `Basic ${Buffer.from(
-              `${config.zoom_client_id}:${config.zoom_client_secret}`
+              `${"GgaTMX1yTQexzClILvhzxA"}:${"Un0tE3O1cqmwFI2Q48HGAH5eEOVp456l"}`
             ).toString("base64")}`,
           },
         }
@@ -22,7 +22,7 @@ const zoom = {
     ).data;
   },
 
-  meeting: async (req) => {
+  meeting: async (req, user) => {
     const { access_token, expires_in } = await zoom.token();
     const data = {
       agenda: req.body.agenda,
@@ -43,11 +43,37 @@ const zoom = {
       start_time: req.body?.scheduled_at,
       type: req.body.meeting_type,
     };
+    try {
+      return (
+        await axios.post(
+          `${config.zoom_base_url}/users/${user}/meetings`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          }
+        )
+      ).data;
+    } catch (error) {
+      return error;
+    }
+  },
+
+  user: async (req) => {
+    const { access_token, expires_in } = await zoom.token();
+
+    const data = {
+      action: "create",
+      user_info: {
+        email: req.user_data.email,
+        type: 1,
+      },
+    };
+
     return (
-      await axios.post(config.zoom_base_url + "/users/me/meetings", data, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
+      await axios.post(config.zoom_base_url + "/users", data, {
+        headers: { Authorization: `Bearer ${access_token}` },
       })
     ).data;
   },
