@@ -26,8 +26,8 @@ const create = async (req, res) => {
     }
 
     if (
-      meeting.response.status === 404 &&
-      meeting.response.data.code === 1001
+      meeting?.response?.status === 404 &&
+      meeting?.response?.data?.code === 1001
     ) {
       return res.code(404).send({
         message:
