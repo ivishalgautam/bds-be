@@ -49,6 +49,8 @@ const create = async (req, res) => {
       return res.code(404).send({ message: "batch not exist!" });
     }
 
+    console.log({ meeting });
+
     if (meeting_type === "SCHEDULED") {
       const data = await table.MeetingModel.create(req, meeting);
       res.send(data);
