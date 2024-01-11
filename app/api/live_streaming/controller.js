@@ -34,7 +34,6 @@ const create = async (req, res) => {
           "You need to accept the zoom request received on your mail id to create meetings",
       });
     }
-    console.log({ meeting });
 
     if (req.body.meeting_type === 1) {
       status = "COMPLETED";

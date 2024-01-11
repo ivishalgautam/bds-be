@@ -163,6 +163,7 @@ const update = async (req, res) => {
 
     if (req.body?.teacher_id) {
       const teacher = await table.TeacherModel.getById(req.body.teacher_id);
+      user_ids.push(teacher.user_id);
       if (!teacher) {
         return res.code(404).send({
           message:
@@ -174,6 +175,7 @@ const update = async (req, res) => {
     if (req.body?.students_ids) {
       for (const student_id of req.body?.students_ids) {
         const student = await table.StudentModel.getById(student_id);
+        user_ids.push(student.user_id);
         if (!student) {
           return res.code(404).send({
             message: `student not found. Invalid student id:- ${student_id}`,
@@ -181,8 +183,6 @@ const update = async (req, res) => {
         }
 
         if (!record.students_id.includes(student_id)) {
-          // console.log(student.user_id);
-          // user_ids.push(student.user_id);
           const user = await table.UserModel.getById(null, student.user_id);
 
           await sendMail(
@@ -201,6 +201,8 @@ const update = async (req, res) => {
         }
       }
     }
+
+    await table.GroupModel.updateGroupUsersByBatchId(user_ids, req.params.id); // update batch group users
 
     await table.BatchModel.update(req, course.course_name);
 

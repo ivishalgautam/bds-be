@@ -107,6 +107,19 @@ const addToGroup = async (prev_users, new_user, group_id) => {
   );
 };
 
+const updateGroupUsersByBatchId = async (user_ids, batch_id) => {
+  return await GroupModel.update(
+    {
+      group_users: user_ids,
+    },
+    {
+      where: {
+        batch_id: batch_id,
+      },
+    }
+  );
+};
+
 const get = async (req) => {
   let query = `
         SELECT
@@ -130,6 +143,8 @@ const getGroupMembers = async (group_id) => {
       WHERE grp.id = '${group_id}'
       ORDER BY grp.created_at
   `;
+
+  console.log(query);
   return await GroupModel.sequelize.query(query, {
     type: sequelizeFwk.QueryTypes.SELECT,
   });
@@ -176,4 +191,5 @@ export default {
   countUserGroup,
   getGroupMembers,
   createCommunityGroup,
+  updateGroupUsersByBatchId,
 };

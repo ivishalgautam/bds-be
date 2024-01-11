@@ -70,6 +70,7 @@ const get = async (req, res) => {
 const getGroupMembers = async (req, res) => {
   try {
     const data = await table.GroupModel.getGroupMembers(req.params.group_id);
+    console.log({ data });
     res.send(data);
   } catch (error) {
     console.error(error);
