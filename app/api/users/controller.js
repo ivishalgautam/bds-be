@@ -6,6 +6,7 @@ import sendMail from "../../helpers/mailer.js";
 import zoom from "../../helpers/zoom.js";
 
 const create = async (req, res) => {
+  console.log({ body: req.body });
   let zoomUser;
   try {
     const record = await table.UserModel.getByUsername(req);
@@ -31,14 +32,16 @@ const create = async (req, res) => {
       }
 
       if (user.role === "teacher") {
-        zoomUser = await zoom.user(req);
-
         await table.TeacherModel.create(
           user.id,
           franchisee.franchisee_id,
           franchisee.id
         );
       }
+    }
+
+    if (user.role === "teacher") {
+      zoomUser = await zoom.user(req);
     }
 
     if (user.role === "teacher" || user.role === "student") {
@@ -60,7 +63,7 @@ const create = async (req, res) => {
         <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 10px;">Feel free to log in and explore our platform.</p>
         <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 0;">Best regards,<br>BDS Team</p>
 
-        <p style="backgroud: red; color: white; padding: 10px;">
+        <p style="background: red; color: white; padding: 10px;">
         ${
           user.role === "teacher" && zoomUser.id
             ? "Note: Accept invitation by zoom to be a part of BDS connect to create zoom meetings."
