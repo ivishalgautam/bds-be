@@ -34,6 +34,7 @@ const create = async (req, res) => {
           "You need to accept the zoom request received on your mail id to create meetings",
       });
     }
+    console.log({ meeting });
 
     if (req.body.meeting_type === 1) {
       status = "COMPLETED";
@@ -48,8 +49,6 @@ const create = async (req, res) => {
     if (!batch) {
       return res.code(404).send({ message: "batch not exist!" });
     }
-
-    console.log({ meeting });
 
     if (meeting_type === "SCHEDULED") {
       const data = await table.MeetingModel.create(req, meeting);
