@@ -132,6 +132,10 @@ const get = async (teacher_id, sub_franchisee_id, student_id) => {
     wherQuery = `WHERE bt.students_id @> '["${student_id}"]'::jsonb`;
   }
 
+  if (!wherQuery) {
+    return [];
+  }
+
   let query = `
         SELECT 
             bt.id,
@@ -158,6 +162,8 @@ const get = async (teacher_id, sub_franchisee_id, student_id) => {
         ${wherQuery}
         ORDER BY bt.created_at DESC
     `;
+
+  console.log({ query, wherQuery });
 
   return await BatchModel.sequelize.query(query, {
     type: sequelizeFwk.QueryTypes.SELECT,

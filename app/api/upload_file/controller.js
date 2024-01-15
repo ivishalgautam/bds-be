@@ -37,6 +37,8 @@ const uploadFiles = async (req, res) => {
 
       const filePath =
         `${folder}` +
+        Date.now() +
+        "_" +
         file.filename
           .replaceAll(" ", "_")
           .replaceAll("'", "_")

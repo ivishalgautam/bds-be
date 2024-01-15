@@ -257,6 +257,7 @@ const get = async (req, res) => {
       student = await table.StudentModel.getByUserId(req.user_data.id);
       // console.log({ student });
     }
+    console.log({ teacher, franchisee, student });
 
     return res.send(
       await table.BatchModel.get(teacher?.id, franchisee?.id, student?.id)

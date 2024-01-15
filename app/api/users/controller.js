@@ -6,7 +6,6 @@ import sendMail from "../../helpers/mailer.js";
 import zoom from "../../helpers/zoom.js";
 
 const create = async (req, res) => {
-  console.log({ body: req.body });
   let zoomUser;
   try {
     const record = await table.UserModel.getByUsername(req);
@@ -41,6 +40,7 @@ const create = async (req, res) => {
     }
 
     if (user.role === "teacher") {
+      console.log("inside create zoom user");
       zoomUser = await zoom.user(req);
     }
 
