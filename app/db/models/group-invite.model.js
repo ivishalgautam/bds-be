@@ -105,10 +105,28 @@ const update = async (invitation_id, status) => {
   );
 };
 
+const deleteById = async (id) => {
+  return await GroupInvtModel.destroy({
+    where: {
+      id: id,
+    },
+  });
+};
+
+const deleteByGroupId = async (group_id) => {
+  return await GroupInvtModel.destroy({
+    where: {
+      group_id: group_id,
+    },
+  });
+};
+
 export default {
   init,
   create,
   get,
   getById,
   update,
+  deleteByGroupId,
+  deleteById,
 };
