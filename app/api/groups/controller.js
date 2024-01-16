@@ -32,10 +32,10 @@ const create = async (req, res) => {
       if (!userRecord) {
         return res.code(404).send({ message: "user not found!" });
       }
+    }
 
-      const group = await table.GroupModel.create(req);
-      console.log({ group });
-
+    const group = await table.GroupModel.create(req, group_users);
+    for (const userId of group.group_users) {
       await table.GroupInvtModel.create(
         group.id,
         req.body.group_name,
