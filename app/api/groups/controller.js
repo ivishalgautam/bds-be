@@ -132,7 +132,7 @@ const deleteById = async (req, res) => {
     }
 
     await table.GroupModel.deleteById(req);
-    await table.GroupInvtModel.deleteByGroupId(id);
+    await table.GroupInvtModel.deleteByGroupId(req.params.id);
 
     res.send({ message: "updated" });
   } catch (error) {
