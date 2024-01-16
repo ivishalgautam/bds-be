@@ -125,7 +125,7 @@ const update = async (req, res) => {
 
 const deleteById = async (req, res) => {
   try {
-    const record = await table.GroupModel.getById(req.params.id);
+    const record = await table.GroupModel.getById(req, req.params.id);
 
     if (!record) {
       return res.code(404).send({ message: "Group not found!" });
