@@ -34,6 +34,10 @@ const init = async (sequelize) => {
           deferrable: sequelizeFwk.Deferrable.INITIALLY_IMMEDIATE,
         },
       },
+      is_deleted: {
+        type: sequelizeFwk.DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       createdAt: "created_at",
@@ -57,7 +61,7 @@ const exist = async (user_id, product_id) => {
   });
 };
 
-const get = async () => {
+const get = async (req) => {
   let query = `
         SELECT
             pe.*,
@@ -84,9 +88,12 @@ const getById = async (id) => {
 };
 
 const deleteById = async (id) => {
-  return await ProductEnquiryModel.destroy({
-    where: { id: id },
-  });
+  return await ProductEnquiryModel.destroy(
+    { is_deleted: true },
+    {
+      where: { id: id },
+    }
+  );
 };
 
 export default {

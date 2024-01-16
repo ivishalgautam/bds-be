@@ -52,6 +52,10 @@ const init = async (sequelize) => {
         type: sequelizeFwk.DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      is_deleted: {
+        type: sequelizeFwk.DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       createdAt: "created_at",
@@ -85,7 +89,7 @@ const get = async (req, enq_to_id) => {
   let whereQuery = "";
 
   if (req.user_data.role !== "admin") {
-    whereQuery = `WHERE ce.enquiry_to_id = '${enq_to_id}'`;
+    whereQuery = `WHERE ce.enquiry_to_id = '${enq_to_id}' AND ce.is_deleted = false`;
   }
 
   let query = `
@@ -113,9 +117,12 @@ const getById = async (id) => {
 };
 
 const deleteById = async (id) => {
-  return await CourseEnquiryModel.destroy({
-    where: { id: id },
-  });
+  return await CourseEnquiryModel.update(
+    {
+      is_deleted: true,
+    },
+    { where: { id: id } }
+  );
 };
 
 export default {

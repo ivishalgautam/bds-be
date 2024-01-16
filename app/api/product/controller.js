@@ -140,9 +140,7 @@ const createEnquiry = async (req, res) => {
 
 const getEnquiries = async (req, res) => {
   try {
-    if (req.user_data.role === "admin") {
-      res.send(await table.ProductEnquiryModel.get());
-    }
+    res.send(await table.ProductEnquiryModel.get(req));
   } catch (error) {
     console.error(error);
     res.code(500).send(error);
