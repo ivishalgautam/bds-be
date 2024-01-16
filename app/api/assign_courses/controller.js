@@ -58,9 +58,9 @@ const assignCourse = async (req, res) => {
         "",
         `<html>
         <body style="font-family: Arial, sans-serif; background-color: #f2f2f2; text-align: center; padding: 20px;">
-          <h1 style="color: #3498db;">Product enquiry</h1>
+          <h1 style="color: #3498db;">Course assigned</h1>
           <p style="margin-top: 20px;">
-            YOU ARE ASSIGNED TO A NEW COURSE: ${data?.course_name} 
+            You are assigned to a new course: ${data?.course_name} 
           </p>
         </body>
       </html>`
