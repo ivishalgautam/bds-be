@@ -18,6 +18,12 @@ const create = async (req, res) => {
       return res.code(400).send({ message: "Please select atleast 1 member" });
     }
 
+    if (group_users.length > 2) {
+      return res
+        .code(409)
+        .send({ message: "Please select less than 5 members!" });
+    }
+
     const { total_groups } = await table.GroupModel.countUserGroup(req);
 
     if (total_groups >= 2) {
