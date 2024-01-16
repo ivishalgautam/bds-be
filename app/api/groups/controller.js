@@ -36,12 +36,14 @@ const create = async (req, res) => {
 
     const group = await table.GroupModel.create(req, group_users);
     for (const userId of group.group_users) {
-      await table.GroupInvtModel.create(
-        group.id,
-        req.body.group_name,
-        userId,
-        req.user_data.id
-      );
+      if (userId !== req.user_data.id) {
+        await table.GroupInvtModel.create(
+          group.id,
+          req.body.group_name,
+          userId,
+          req.user_data.id
+        );
+      }
     }
 
     res.send({ message: "invitations sent!" });
