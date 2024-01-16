@@ -14,22 +14,22 @@ const getUserGroups = async (req, res) => {
 const create = async (req, res) => {
   const { group_users } = req.body;
   try {
-    if (group_users?.length === 0) {
-      return res.code(400).send({ message: "Please select atleast 1 member" });
-    }
-
-    if (group_users.length > 2) {
-      return res
-        .code(409)
-        .send({ message: "Please select less than 5 members!" });
-    }
-
     const { total_groups } = await table.GroupModel.countUserGroup(req);
 
     if (total_groups >= 2) {
       return res
         .code(400)
         .send({ message: "You cannot create more than 2 groups!" });
+    }
+
+    if (group_users?.length === 0) {
+      return res.code(400).send({ message: "Please select atleast 1 member" });
+    }
+
+    if (group_users?.length > 4) {
+      return res
+        .code(409)
+        .send({ message: "Please select less than 5 members!" });
     }
 
     for (const userId of group_users) {
@@ -123,10 +123,28 @@ const update = async (req, res) => {
   }
 };
 
+const deleteById = async (req, res) => {
+  try {
+    const record = await table.GroupModel.getById(req.params.id);
+
+    if (!record) {
+      return res.code(404).send({ message: "Group not found!" });
+    }
+
+    await table.GroupModel.deleteById(req);
+
+    res.send({ message: "updated" });
+  } catch (error) {
+    console.error(error);
+    res.code(500).send(error);
+  }
+};
+
 export default {
   create,
   get,
   update,
   getUserGroups,
   getGroupMembers,
+  deleteById,
 };
