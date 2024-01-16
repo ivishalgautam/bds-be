@@ -58,7 +58,23 @@ const exist = async (user_id, product_id) => {
 };
 
 const get = async () => {
-  return await ProductEnquiryModel.findAll();
+  let query = `
+        SELECT
+            pe.*,
+            usr.email,
+            usr.mobile_number,
+            usr.username,
+            prd.title
+        FROM product_enquiries pe
+        LEFT JOIN users usr on usr.id = pe.user_id
+        LEFT JOIN products prd on prd.id = pe.product_id
+`;
+
+  console.log({ query });
+
+  return await ProductEnquiryModel.sequelize.query(query, {
+    type: sequelizeFwk.QueryTypes.SELECT,
+  });
 };
 
 const getById = async (id) => {

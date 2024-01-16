@@ -138,6 +138,17 @@ const createEnquiry = async (req, res) => {
   }
 };
 
+const getEnquiries = async (req, res) => {
+  try {
+    if (req.user_data.role === "admin") {
+      res.send(await table.ProductEnquiryModel.get());
+    }
+  } catch (error) {
+    console.error(error);
+    res.code(500).send(error);
+  }
+};
+
 export default {
   create: create,
   update: update,
@@ -145,4 +156,5 @@ export default {
   get: get,
   getById: getById,
   createEnquiry: createEnquiry,
+  getEnquiries: getEnquiries,
 };

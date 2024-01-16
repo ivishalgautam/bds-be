@@ -13,4 +13,5 @@ export default async function routes(fastify, options) {
 
   //   product enquiry
   fastify.post("/enquiry/:product_id", {}, controller.createEnquiry);
+  fastify.get("/enquiry", {}, controller.getEnquiries);
 }
