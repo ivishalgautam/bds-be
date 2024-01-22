@@ -5,6 +5,7 @@ import controller from "./controller.js";
 export default async function routes(fastify, options) {
   fastify.get("/", {}, controller.get);
   fastify.get("/:id", {}, controller.getById);
+  fastify.get("/getByCourseId/:id", {}, controller.getByCourseId);
 
   fastify.post("/", {}, controller.create);
 

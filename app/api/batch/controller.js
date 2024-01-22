@@ -257,11 +257,18 @@ const get = async (req, res) => {
       student = await table.StudentModel.getByUserId(req.user_data.id);
       // console.log({ student });
     }
-    console.log({ teacher, franchisee, student });
 
-    return res.send(
-      await table.BatchModel.get(teacher?.id, franchisee?.id, student?.id)
+    const data = await table.BatchModel.get(
+      teacher?.id,
+      franchisee?.id,
+      student?.id
     );
+
+    if (req.user_data.role === "student" && !req.user_data.is_online) {
+      // console.log(data[0].course_syllabus[0].day_wise);
+    }
+
+    return res.send(data);
   } catch (error) {
     console.log(error);
     return res.send(error);
@@ -276,6 +283,7 @@ const getById = async (req, res) => {
         .code(404)
         .send({ message: "batch not exists in our database" });
     }
+    console.log({ record });
     return res.send(record);
   } catch (error) {
     console.log(error);

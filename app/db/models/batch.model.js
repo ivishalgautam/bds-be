@@ -163,8 +163,6 @@ const get = async (teacher_id, sub_franchisee_id, student_id) => {
         ORDER BY bt.created_at DESC
     `;
 
-  console.log({ query, wherQuery });
-
   return await BatchModel.sequelize.query(query, {
     type: sequelizeFwk.QueryTypes.SELECT,
   });

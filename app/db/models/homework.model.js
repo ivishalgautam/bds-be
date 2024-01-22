@@ -103,26 +103,22 @@ const getById = async (req, course_id) => {
 };
 
 const getByCourseId = async (course_id) => {
-  //   return console.log({ req: req.params, course_id });
-  return await HomeWorkModel.findOne({
-    where: {
-      course_id: course_id,
-    },
+  let query = `
+        SELECT 
+            hmw.id,
+            hmw.is_disabled,
+            hmw.homework,
+            co.id as course_id,
+            co.course_name,
+            co.duration
+        FROM
+            homeworks hmw
+        INNER JOIN courses co ON co.id = hmw.course_id
+        WHERE hmw.course_id = '${course_id}'
+    `;
+  return await HomeWorkModel.sequelize.query(query, {
+    type: sequelizeFwk.QueryTypes.SELECT,
   });
-  //   let query = `
-  //         SELECT
-  //             *
-  //         FROM
-  //             homeworks
-  //         WHERE id = '${req.params.id}'
-  //     `;
-  //   if (course_id) {
-  //     query += `AND course_id = '${course_id}'`;
-  //   }
-  //   return await HomeWorkModel.sequelize.query(query, {
-  //     plain: true,
-  //     type: sequelizeFwk.QueryTypes.SELECT,
-  //   });
 };
 
 const deleteById = async (req) => {

@@ -70,7 +70,33 @@ const deleteById = async (req, res) => {
 
 const get = async (req, res) => {
   try {
-    return res.send(await table.HomeWorkModel.get());
+    const data = await table.HomeWorkModel.get();
+    console.log({ data });
+    return res.send(data);
+  } catch (error) {
+    console.log(error);
+    return res.send(error);
+  }
+};
+
+const getByCourseId = async (req, res) => {
+  let homework;
+  try {
+    const batch = await table.BatchModel.getById(req, req.params.id);
+
+    homework = await table.HomeWorkModel.getByCourseId(batch.course_id);
+
+    if (req.user_data.role === "student" && !req.user_data.is_online) {
+      homework = homework.map((hwk) => ({
+        ...hwk,
+        homework: hwk.homework.map((ele) => ({
+          ...ele,
+          day_wise: ele.day_wise.map((dw) => ({ ...dw, ppt_file: "" })),
+        })),
+      }));
+    }
+
+    return res.send(homework);
   } catch (error) {
     console.log(error);
     return res.send(error);
@@ -188,4 +214,5 @@ export default {
   uploadHomework: uploadHomework,
   getUploadedHomeworks: getUploadedHomeworks,
   deleteUploadedHomework: deleteUploadedHomework,
+  getByCourseId: getByCourseId,
 };

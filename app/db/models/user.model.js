@@ -81,6 +81,10 @@ const init = async (sequelize) => {
       type: sequelizeFwk.DataTypes.JSONB,
       defaultValue: [],
     },
+    is_online: {
+      type: sequelizeFwk.DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   });
   await UserModel.sync({ alter: true });
 };
@@ -100,6 +104,7 @@ const create = async (req) => {
     document_url: req?.body?.document_url,
     image_url: req?.body?.image_url,
     address: req?.body?.address,
+    is_online: req?.body?.is_online,
   });
 };
 
@@ -141,6 +146,7 @@ const getByUsername = async (req, record = undefined) => {
       "is_verified",
       "image_url",
       "birth_date",
+      "is_online",
     ],
   });
 };
@@ -158,6 +164,7 @@ const update = async (req) => {
       birth_date: req?.body?.birth_date,
       document_url: req?.body?.document_url,
       address: req?.body?.address,
+      is_online: req?.body?.is_online,
     },
     {
       where: {

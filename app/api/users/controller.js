@@ -24,7 +24,8 @@ const create = async (req, res) => {
         const student = await table.StudentModel.create(
           user.id,
           franchisee.franchisee_id,
-          franchisee.id
+          franchisee.id,
+          req.body.is_online
         );
         req.body.reward_points = 0;
         await table.RewardModel.create(req, student.id);
@@ -44,9 +45,8 @@ const create = async (req, res) => {
       zoomUser = await zoom.user(req);
     }
 
+    res.send(user);
     if (user.role === "teacher" || user.role === "student") {
-      console.log("mail sent");
-
       await sendMail(
         user?.email,
         "BDS Credentials",
@@ -74,7 +74,6 @@ const create = async (req, res) => {
       </html>`
       );
     }
-    res.send(user);
   } catch (error) {
     console.log(error);
     return res.send(error);
@@ -87,6 +86,7 @@ const update = async (req, res) => {
     if (!record) {
       return res.code(404).send({ message: "User not exists" });
     }
+
     return res.send(await table.UserModel.update(req));
   } catch (error) {
     console.log(error);
@@ -144,6 +144,7 @@ const getById = async (req, res) => {
       return res.code(404).send({ message: "User not exists" });
     }
     delete record.password;
+
     return res.send(record);
   } catch (error) {
     console.log(error);
