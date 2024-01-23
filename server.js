@@ -5,6 +5,7 @@ import cors from "@fastify/cors";
 import { dirname } from "path";
 import path from "path";
 import fastifySocketIO from "@fastify/websocket";
+import fastifyCron from "fastify-cron";
 
 // import internal modules
 import authRoutes from "./app/api/auth/routes.js";
@@ -61,5 +62,11 @@ export default (app) => {
       });
     });
   });
+
+  app.register(fastifyCron);
+
+  app.cron("* * * * * *", async () => {
+    // This function will be executed every minute
+    app.log.info("Cron job executed at:", new Date().toISOString());
+  });
 };
-0;
