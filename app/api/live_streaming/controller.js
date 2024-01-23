@@ -11,6 +11,10 @@ const create = async (req, res) => {
     let user;
     let meeting;
 
+    if (!req.user_data.is_online) {
+      return res.code(401).send({ message: "Unauthorized access!" });
+    }
+
     let userExist = await table.ZoomUserModel.getByUserId(req.user_data.id);
 
     // return console.log({ userExist });

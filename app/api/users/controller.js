@@ -24,8 +24,7 @@ const create = async (req, res) => {
         const student = await table.StudentModel.create(
           user.id,
           franchisee.franchisee_id,
-          franchisee.id,
-          req.body.is_online
+          franchisee.id
         );
         req.body.reward_points = 0;
         await table.RewardModel.create(req, student.id);
