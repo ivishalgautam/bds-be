@@ -23,6 +23,7 @@ import chatRoutes from "../../api/chat/routes.js";
 import resultRoutes from "../../api/result/routes.js";
 import levelsRoutes from "../../api/level/routes.js";
 import rewardRoutes from "../../api/rewards/routes.js";
+import greetingsRoutes from "../../api/greetings/routes.js";
 
 export default async function routes(fastify, options) {
   fastify.addHook("onRequest", jwtVerify.verifyToken);
@@ -50,4 +51,5 @@ export default async function routes(fastify, options) {
   fastify.register(resultRoutes, { prefix: "results" });
   fastify.register(levelsRoutes, { prefix: "levels" });
   fastify.register(rewardRoutes, { prefix: "rewards" });
+  fastify.register(greetingsRoutes, { prefix: "greetings" });
 }

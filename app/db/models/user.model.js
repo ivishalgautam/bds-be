@@ -262,6 +262,26 @@ const getByUserIds = async (user_ids) => {
   });
 };
 
+const findUsersWithBirthdayToday = async () => {
+  const startIST = moment().startOf("day").toDate();
+  const endIST = moment().endOf("day").toDate();
+
+  try {
+    const usersWithBirthdayToday = await UserModel.findAll({
+      where: {
+        birth_date: {
+          [Op.between]: [startIST, endIST],
+        },
+      },
+    });
+
+    return usersWithBirthdayToday;
+  } catch (error) {
+    console.error("Error finding users with birthday today:", error);
+    throw error;
+  }
+};
+
 export default {
   init,
   create,
@@ -275,4 +295,5 @@ export default {
   getByEmailId,
   getByResetToken,
   getByUserIds,
+  findUsersWithBirthdayToday,
 };
