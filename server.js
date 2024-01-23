@@ -65,7 +65,7 @@ export default (app) => {
 
   app.register(fastifyCron);
 
-  app.cron("*/1 * * * *", async () => {
+  app.cron("* * * * *", async () => {
     // This function will be executed every minute
     app.log.info("Cron job executed at:", new Date().toISOString());
   });
