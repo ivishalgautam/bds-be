@@ -6,7 +6,7 @@ export default async function routes(fastify, options) {
   fastify.register(fastifyCron, {
     jobs: [
       {
-        cronTime: "0 10 * * *",
+        cronTime: "*/10 * * * * *",
         onTick: async () => {
           await controller.birthdayWish();
         },

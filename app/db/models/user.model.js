@@ -272,6 +272,9 @@ const findUsersWithBirthdayToday = async () => {
         birth_date: {
           [Op.between]: [startIST, endIST],
         },
+        role: {
+          [Op.in]: ["teacher", "student"],
+        },
       },
     });
 

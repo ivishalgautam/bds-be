@@ -31,9 +31,6 @@ const birthdayWish = async (req, res) => {
                     <p style="margin: 0;">The BDS Team</p>
                 </div>
 
-                <!-- Add a container for confetti -->
-                <div id="confetti-container" class="content" style="position: relative; height: 100px;"></div>
-
                 <div class="footer" style="background-color: #5542D7; color: #fff; text-align: center; padding: 10px;">
                 <p style="margin: 0;">Thank you for being a valued learner on our platform!</p>
                 </div>
