@@ -27,6 +27,7 @@ import ProductEnquiryModel from "./models/product-enquiry.model.js";
 import CourseEnquiryModel from "./models/course-enquiry.model.js";
 import MeetingModel from "./models/meeting.model.js";
 import ZoomUserModel from "./models/zoom-users.controller.js";
+import leadsModel from "./models/leads.model.js";
 
 export default {
   UserModel: UserModel,
@@ -58,4 +59,5 @@ export default {
   CourseEnquiryModel: CourseEnquiryModel,
   MeetingModel: MeetingModel,
   ZoomUserModel: ZoomUserModel,
+  leadsModel: leadsModel,
 };

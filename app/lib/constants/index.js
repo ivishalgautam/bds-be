@@ -73,6 +73,7 @@ const constants = {
     COURSE_ENQUIRY_TABLE: "course_enquiries",
     MEETING_TABLE: "meetings",
     ZOOM_USER_TABLE: "zoom_users",
+    LEADS_TABLE: "leads",
   },
   bcrypt: {
     SALT_ROUNDS: 10,
