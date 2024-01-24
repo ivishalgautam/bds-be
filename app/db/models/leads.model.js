@@ -5,7 +5,7 @@ import sequelizeFwk from "sequelize";
 let LeadsModel = null;
 
 const init = async (sequelize) => {
-  LeadsModel = sequelize.define(constants.models.LEVEL_TABLE, {
+  LeadsModel = sequelize.define(constants.models.LEADS_TABLE, {
     id: {
       allowNull: false,
       primaryKey: true,
