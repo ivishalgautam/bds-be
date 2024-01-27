@@ -45,7 +45,8 @@ const create = async (req, res) => {
     }
 
     res.send(user);
-    if (user.role === "teacher" || user.role === "student") {
+
+    if (user?.role === "teacher" || user?.role === "student") {
       await sendMail(
         user?.email,
         "BDS Credentials",
@@ -53,10 +54,10 @@ const create = async (req, res) => {
         `<html>
         <body style="font-family: Arial, sans-serif; background-color: #f2f2f2; text-align: center; padding: 20px;">
         <h1 style="text-align: center;">Credentials for ${
-          user.role === "student" ? "Student" : "Teacher"
+          user?.role === "student" ? "Student" : "Teacher"
         }</h1>
         <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 10px;">Username: '${
-          user.username
+          user?.username
         }' and Password: '${req.body.password}'</p>
         <a href="https://bdsconnectcc.in/login" style="display: inline-block; padding: 10px 20px; font-family: Arial, sans-serif; font-size: 16px; color: #fff; background-color: #4caf50; text-decoration: none; border-radius: 4px; margin-bottom: 10px;">Login</a>
         <p style="font-family: Arial, sans-serif; font-size: 16px; color: #333; margin-bottom: 10px;">Feel free to log in and explore our platform.</p>
@@ -64,7 +65,7 @@ const create = async (req, res) => {
 
         <p style="background: red; color: white; padding: 10px;">
         ${
-          user.role === "teacher" && zoomUser.id
+          user?.role === "teacher" && zoomUser?.id
             ? "Note: Accept invitation by zoom to be a part of BDS connect to create zoom meetings."
             : ""
         }
@@ -99,9 +100,10 @@ const deleteById = async (req, res) => {
     if (record === 0) {
       return res.code(404).send({ message: "User not exists" });
     }
-    return res.send({
-      message: "User deleted.",
-    });
+
+    console.log({ record });
+
+    return res.send(record);
   } catch (error) {
     console.log(error);
     return res.send(error);

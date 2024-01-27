@@ -59,5 +59,5 @@ export default {
   CourseEnquiryModel: CourseEnquiryModel,
   MeetingModel: MeetingModel,
   ZoomUserModel: ZoomUserModel,
-  leadsModel: leadsModel,
+  LeadsModel: leadsModel,
 };

@@ -30,27 +30,16 @@ const assignCourse = async (req, res) => {
       assignedTo.role === "master_franchisee" ? null : req.user_data.id
     );
 
-    // return console.log({ enquiryRecord });
-
     req.body.course_name = record.course_name;
-    // const franchisee = await table.FranchiseeModel.getById(
-    //   req,
-    //   req.user_data.id
-    // );
-    // if (!franchisee) {
-    //   return res.code(404).send({ message: "Franchisee not found!" });
-    // }
     const data = await table.CourseAssignModel.create(req);
+
+    res.send({ message: "New course Assigned." });
 
     if (data) {
       enquiryRecord !== null &&
         (await table.CourseEnquiryModel.deleteById(
           enquiryRecord?.dataValues?.id
         ));
-
-      res.send({
-        message: "New course Assigned.",
-      });
 
       await sendMail(
         assignedTo?.dataValues.email,

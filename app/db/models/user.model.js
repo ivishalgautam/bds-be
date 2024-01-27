@@ -208,6 +208,8 @@ const deleteById = async (req, user_id) => {
     where: {
       id: req?.params?.id || user_id,
     },
+    returning: true,
+    raw: true,
   });
 };
 
