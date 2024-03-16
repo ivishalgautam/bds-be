@@ -65,7 +65,6 @@ const init = async (sequelize) => {
 };
 
 const create = async (req) => {
-  console.log(req.body);
   return await UserCourseModel.create({
     course_name: req.body.course_name,
     status: req.body.status,
