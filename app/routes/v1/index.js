@@ -27,7 +27,7 @@ import greetingsRoutes from "../../api/greetings/routes.js";
 import leadsRoutes from "../../api/leads/routes.js";
 
 export default async function routes(fastify, options) {
-  fastify.addHook("onRequest", jwtVerify.verifyToken);
+  // fastify.addHook("onRequest", jwtVerify.verifyToken);
   fastify.register(userRoutes, { prefix: "users" });
   fastify.register(courseRoutes, { prefix: "courses" });
   fastify.register(homeworkRoutes, { prefix: "homeworks" });
